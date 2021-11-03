@@ -1,0 +1,8 @@
+
+/api/node_modules
+/ui/node_modules
+/tracker-mobile-app/node_modules
+/tracker-mobile-app/platforms
+/tracker-mobile-app/plugins
+/api/..git
+/api/.git

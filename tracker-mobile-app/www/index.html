@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+       
+        <!--meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;"-->
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+        <meta name="color-scheme" content="light dark">
+        <link rel="stylesheet" href="css/index.css">
+        <title>Livestock Tracker</title>
+    </head>
+    <body>
+       
+        <div style="position: fixed; top: 0; bottom: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: center; font-family: Arial;">
+            
+            <div style="width: 100%; text-align: center;">
+
+                <h1>LIVESTOCK TRACKER</h1>
+                <p class="green">
+                    <b>LAT: </b>
+                    <span id="span-lat">0</span>
+                </p>
+                <p class="green">
+                    <b>LNG: </b>
+                    <span id="span-lng">0</span>
+                </p>
+
+                <p>
+                    <b>NETWORK STATUS:</b>
+                    <span id="span-network-status" style="color: red;">DICONNECTED</span>
+                </p>
+            </div>
+        </div>
+
+        <script src="cordova.js"></script>
+
+        <script type="text/javascript">
+
+
+            async function displayLocation({ coords }) {
+
+                const lat = coords.latitude;
+                const long = coords.longitude;
+
+                document.getElementById('span-lat').innerHTML = lat;
+                document.getElementById('span-lng').innerHTML = long;
+
+                try {
+                    await fetch('https://livestock-tracker-bruteforce.herokuapp.com/api/coordinates', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ lat, long })
+                    });
+
+                    showOnlineStatus();
+
+                } catch (err) {
+                    console.log(err);
+                    showOfflineStatus();
+                }
+            }
+
+
+            function onDeviceReady() {
+                // Cordova is now initialized. Have fun!
+
+                // console.log('Running cordova-' + cordova.platformId + '@' + cordova.version);
+                 navigator.geolocation.watchPosition(displayLocation, function(err) {
+                    alert(err.message);
+                });
+            }
+
+            function showOfflineStatus() {
+                document.getElementById('span-network-status').style.color = 'red';
+                document.getElementById('span-network-status').innerHTML = 'DISCONNECTED';
+            }
+
+
+            function showOnlineStatus() {
+                document.getElementById('span-network-status').style.color = 'green';
+                document.getElementById('span-network-status').innerHTML = 'CONNECTED';
+            }
+
+
+            document.addEventListener('deviceready', onDeviceReady);
+            window.addEventListener('offline', showOfflineStatus);
+            // window.addEventListener('online', showOnlineStatus);
+
+            if (window.location.href.indexOf('XAVI/PROJECTS') !== -1) {
+                alert("ARTIFICIAL DEVICEREADY")
+                document.dispatchEvent(new Event('deviceready'));
+            }
+
+
+            if (navigator.onLine)
+                showOnlineStatus();
+            else
+                showOfflineStatus();
+
+
+        </script>
+    </body>
+</html>

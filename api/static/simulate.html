@@ -1,0 +1,54 @@
+
+
+<table>
+	<tbody>
+		<tr>
+			<td><b>LATITUDE</b></td>
+			<td id="td-lat">0</td>
+		</tr>
+
+		<tr>
+			<td><b>LONGITUDE</b></td>
+			<td id="td-long">0</td>
+		</tr>
+
+	</tbody>
+</table>
+
+<script type="text/javascript">
+	
+	function getRandom() {
+		return 0.004 * Math.random();
+	}
+
+	async function sendCoordinates(pos) {
+
+		myLocation.lat = pos.coords.latitude;
+		myLocation.long = pos.coords.longitude;
+
+		document.getElementById('td-lat').innerHTML = myLocation.lat;
+
+		document.getElementById('td-long').innerHTML = myLocation.long;
+
+		await fetch('/api/coordinates', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(myLocation)
+		});
+
+	}
+
+	const myLocation = {
+		lat: -17.8307111,
+		long: 31.0497229
+	}
+
+	// setInterval(sendCoordinates, 2000);
+
+	navigator.geolocation.watchPosition(sendCoordinates, function(err) {
+		console.log(err);
+	});
+	
+</script>
