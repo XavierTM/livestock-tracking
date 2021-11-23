@@ -12,7 +12,12 @@ const cors = require('cors');
 const app = express();
 
 // globals
-let location = { lat: -17.8307484, long: 31.04977643 }
+const center = { lat: -17.8307484, long: 31.04977643 };
+let location = { lat: -17.8307484, long: 31.04977643, outOfBounds: false };
+const GEO_FENCING_RADIUS = 10;
+
+// helper functions
+const { getDistance } = require('./utils')
 
 // middleware
 const corsOptions = {
@@ -39,9 +44,13 @@ app.use(express.urlencoded({ extended: false }));
 app.post('/api/coordinates', function(req, res) {
 
 	const { lat, long } = req.body;
+	const distance = getDistance( { lat, long },  center);
+
+
 	location = { lat, long };
+	location.outOfBounds = (distance > GEO_FENCING_RADIUS); 
 	res.send();
-	// console.log(location);
+	console.log(location);
 });
 
 

@@ -38,10 +38,20 @@ class Cow extends Page {
 
 	_render() {
 
-		const { lat, long } = this.state.location;
+		const { lat, long, outOfBounds=false } = this.state.location;
+
+		let radiusStatusColor, radiusStatusText;
+		if (outOfBounds) {
+			radiusStatusText = 'OUT OF BOUNDS';
+			radiusStatusColor = 'red';
+		} else {
+			radiusStatusText = 'IN RADIUS';
+			radiusStatusColor = 'green';
+		}
 
 		return <div>
 			<h1 style={{ paddingLeft: 20 }}>LIVE LOCATION OF COW <span style={{ color: 'green' }}>1001</span></h1>
+			<h3 style={{ paddingLeft: 20 }}>STATUS: <span style={{ color: radiusStatusColor }}>{radiusStatusText}</span></h3>
 
 			<GoogleMapWithMarker
 				lat={lat}
