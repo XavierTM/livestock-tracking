@@ -44,19 +44,41 @@ app.use(express.urlencoded({ extended: false }));
 app.post('/api/coordinates', function(req, res) {
 
 	const { lat, long } = req.body;
+
+	if (typeof lat !== 'number')
+		return res.send(400);
+	if (typeof long !== 'number')
+		return res.send(400);
+
+
 	const distance = getDistance( { lat, long },  center);
-
-
-	location = { lat, long };
+	location = { lat, long, distance };
 	location.outOfBounds = (distance > GEO_FENCING_RADIUS); 
 	res.send();
-	console.log(location);
+	
 });
 
 
 app.get('/api/coordinates', function(req, res) {
 	res.send(location);
 });
+
+app.post('/api/center', function(req, res) {
+	const { lat, long } = req.body;
+
+	if (typeof lat !== 'number')
+		return res.send(400);
+	if (typeof long !== 'number')
+		return res.send(400);
+
+	center.lat = lat;
+	center.long = long;
+
+	location.distance = getDistance(center, location);
+	location.outOfBounds = location.distance > GEO_FENCING_RADIUS;
+
+	res.send();
+})
 
 
 const PORT = process.env.PORT || 8080;
