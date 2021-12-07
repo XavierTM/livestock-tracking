@@ -70,20 +70,18 @@ void loop() {
 
     delay(FIX_GPS_DELAY);
     char response[200]; 
-//    String body = "{\"lat\": " + String(lat) + ", \"long\": " + String(lon) + "}";
-//    int len = body.length();
-//    char bodyChar[len - 1];
-//
-//    for (int i = 0; i < len; i++) {
-//      bodyChar[i] = body.charAt(i);
-//    }
-//
-//    Serial.print("Payload: "); Serial.println(bodyChar);
-//    Serial.print("Payload Str: "); Serial.println(body);
+    String body = "{\"lat\": " + String(lat) + ", \"long\": " + String(lon) + "}";
+    int len = body.length();
+    char bodyChar[len - 1];
 
-    char bodyChar = "{\"lat\": 0, \"long\": 0 }";
+    for (int i = 0; i < len; i++) {
+      bodyChar[i] = body.charAt(i);
+    }
 
-    uint16_t responseCode = sim808.httpPost("http://starcad.co.zw:8080/api/coordinates", F("application/json"), bodyChar, response, 200);
+    Serial.print("Payload: "); Serial.println(bodyChar);
+    Serial.print("Payload Str: "); Serial.println(body);
+
+    uint16_t responseCode = sim808.httpPost("http://starcad.co.zw:8080/api/coordinates", S_F("application/json"), bodyChar, response, 200);
     
     Serial.println("Status: " + String(responseCode));
     Serial.print("Response: ");Serial.println(responseCode);
