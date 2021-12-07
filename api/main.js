@@ -45,10 +45,10 @@ app.post('/api/coordinates', function(req, res) {
 
 	const { lat, long } = req.body;
 
-	if (typeof lat !== 'number')
-		return res.send(400);
+	if (typeof lat !== 'number')		
+		return res.status(400).send(`lat(${lat}) is of type '${typeof lat}'`);
 	if (typeof long !== 'number')
-		return res.send(400);
+		return res.status(400).send(`long(${long}) is of type '${typeof long}'`);
 
 
 	const distance = getDistance( { lat, long },  center);
