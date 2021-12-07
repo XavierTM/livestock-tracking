@@ -66,10 +66,11 @@ app.get('/api/coordinates', function(req, res) {
 app.post('/api/center', function(req, res) {
 	const { lat, long } = req.body;
 
-	if (typeof lat !== 'number')
-		return res.send(400);
+
+	if (typeof lat !== 'number')		
+		return res.status(400).send(`lat(${lat}) is of type '${typeof lat}'`);
 	if (typeof long !== 'number')
-		return res.send(400);
+		return res.status(400).send(`long(${long}) is of type '${typeof long}'`);
 
 	center.lat = lat;
 	center.long = long;
