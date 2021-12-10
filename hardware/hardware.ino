@@ -67,16 +67,11 @@ void loop() {
     sim808.getGpsField(position, SIM808GpsField::Latitude, &lat);
     sim808.getGpsField(position, SIM808GpsField::Longitude, &lon);;
 
-
-    delay(FIX_GPS_DELAY);
     char response[200]; 
     String body = "{\"lat\": " + String(lat) + ", \"long\": " + String(lon) + "}";
-    int len = body.length();
-    char bodyChar[len - 1];
-
-    for (int i = 0; i < len; i++) {
-      bodyChar[i] = body.charAt(i);
-    }
+    int len = body.length() + 1;
+    char bodyChar[len];
+    body.toCharArray(bodyChar, len);
 
     Serial.print("Payload: "); Serial.println(bodyChar);
     Serial.print("Payload Str: "); Serial.println(body);
@@ -85,5 +80,8 @@ void loop() {
     
     Serial.println("Status: " + String(responseCode));
     Serial.print("Response: ");Serial.println(responseCode);
+
+    
+    delay(FIX_GPS_DELAY);
     
 }

@@ -7,6 +7,7 @@ console.clear();
 
 const express = require('express');
 const cors = require('cors');
+const { init:initMail, sendEmail } = require('./modules/email');
 
 
 const app = express();
@@ -45,8 +46,6 @@ app.post('/api/coordinates', function(req, res) {
 
 	const { lat, long } = req.body;
 
-	if (!req.is('application/json'))
-		console.log("Not JSON");
 
 	if (typeof lat !== 'number')		
 		return res.status(400).send(`lat(${lat}) is of type '${typeof lat}'`);
@@ -56,8 +55,18 @@ app.post('/api/coordinates', function(req, res) {
 
 	const distance = getDistance( { lat, long },  center);
 	location = { lat, long, distance };
+	const prevOutOfBounds = location.outOfBounds;
 	location.outOfBounds = (distance > GEO_FENCING_RADIUS); 
 	res.send();
+
+	if (location.outOfBounds && !prevOutOfBounds) {
+		sendEmail({
+			to: 'xaviermukodi@gmail.com',
+			from: 'Livestock Tracker <N0162736C@students.nust.ac.zw>',
+			subject: 'Cow out of bounds',
+			text: 'Cow 1001 is now out bounds',
+		})
+	}
 	
 });
 
@@ -86,6 +95,14 @@ app.post('/api/center', function(req, res) {
 
 
 const PORT = process.env.PORT || 8080;
+
+initMail({
+	service: 'gmail',
+	credentials: {
+		username: 'N0162736C@students.nust.ac.zw',
+		password: '210683504'
+	}
+});
 
 app.listen(PORT, function() {
 	console.log('Server started on PORT', PORT);
