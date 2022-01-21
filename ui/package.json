@@ -1,5 +1,5 @@
 {
-  "name": "fresh-react-app",
+  "name": "livestock-tracking-demo-ui",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -11,12 +11,16 @@
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "axios": "^0.22.0",
+    "dms-conversion": "^3.1.1",
+    "geocoder": "^0.2.3",
+    "node-open-geocoder": "^4.0.1",
     "queue-fifo": "^0.2.6",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-google-maps": "^9.4.5",
     "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
+    "save": "^2.4.0",
     "web-vitals": "^1.1.2"
   },
   "scripts": {

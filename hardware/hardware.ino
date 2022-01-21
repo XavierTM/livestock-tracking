@@ -12,7 +12,7 @@
 #define SIM_RST   5 ///< SIM808 RESET
 #define SIM_RX    6 ///< SIM808 RXD
 #define SIM_TX    7 ///< SIM808 TXD
-#define SIM_PWR   9 ///< SIM808 PWRKEY
+#define SIM_PWR   4 ///< SIM808 PWRKEY
 #define SIM_STATUS  8 ///< SIM808 STATUS
 
 #define SIM808_BAUDRATE 9600    ///< Control the baudrate use to communicate with the SIM808 module
@@ -31,16 +31,37 @@
 
 
 SoftwareSerial simSerial(SIM_RX, SIM_TX);
-SIM808 sim808 = SIM808(SIM_RST);
+SIM808 sim808 = SIM808(SIM_RST, SIM_PWR);
 char position[POSITION_SIZE];
+
+
+
+void powerOnSIM() {
+  digitalWrite(SIM_PWR, HIGH);
+  delay(1000);
+  digitalWrite(SIM_PWR, LOW);
+}
+
+void powerOffSIM() {
+  digitalWrite(SIM_PWR, HIGH);
+  delay(3000);
+  digitalWrite(SIM_PWR, LOW);
+}
+
+
 
 void setup() {
     Serial.begin(SERIAL_BAUDRATE);
 
+    pinMode(SIM_PWR, OUTPUT);
+
     simSerial.begin(SIM808_BAUDRATE);
     sim808.begin(simSerial);
 
-
+    Serial.println("Power on SIM 808");
+    powerOnSIM();
+    
+    Serial.println("Power on GPS");
     sim808.powerOnOffGps(true);
 
 
@@ -53,6 +74,9 @@ void setup() {
 
 
 void loop() {
+
+
+    Serial.println("Loop");
     
     SIM808GpsStatus status = sim808.getGpsStatus(position, POSITION_SIZE);
     
@@ -61,14 +85,33 @@ void loop() {
         return;
     }
 
-    float lat, lon;
+    char *latRawChar, *longRawChar;
     __StrPtr state;
 
-    sim808.getGpsField(position, SIM808GpsField::Latitude, &lat);
-    sim808.getGpsField(position, SIM808GpsField::Longitude, &lon);;
+    sim808.getGpsField(position, SIM808GpsField::Latitude, &latRawChar);
+    sim808.getGpsField(position, SIM808GpsField::Longitude, &longRawChar);
+
+    String lat = String(latRawChar);
+    String lng = String(longRawChar);
+    
+    int indexOfFirstComma;
+
+    indexOfFirstComma = lat.indexOf(",");
+    if (indexOfFirstComma != -1)
+      lat = lat.substring(0, indexOfFirstComma);
+
+    Serial.println("Lat: " + lat);
+
+    indexOfFirstComma = lng.indexOf(",");
+    if (indexOfFirstComma != -1)
+      lng = lng.substring(0, indexOfFirstComma);
+
+    Serial.println("Long: " + lng);
+
+    
 
     char response[200]; 
-    String body = "{\"lat\": " + String(lat) + ", \"long\": " + String(lon) + "}";
+    String body = "{\"lat\": " + lat + ", \"long\": " + lng + "}";
     int len = body.length() + 1;
     char bodyChar[len];
     body.toCharArray(bodyChar, len);

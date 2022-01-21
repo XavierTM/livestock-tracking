@@ -16,6 +16,7 @@ class GoogleMapWithMarker extends Component {
 	}
 
 
+
 	updateMarkerAndCenterPosition() {
 
 		try {
@@ -55,6 +56,7 @@ class GoogleMapWithMarker extends Component {
 			this.map = map;
 			this.marker = marker;
 
+
 		} catch (err) {
 			console.log(err);
 		}
@@ -90,6 +92,7 @@ class GoogleMapWithMarker extends Component {
 			script.async = true;
 			document.body.append(script);
 		} else {
+			this.createMapAndMarker();
 			this.updateMarkerAndCenterPosition();
 		}
 	}
