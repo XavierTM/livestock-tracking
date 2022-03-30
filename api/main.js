@@ -77,7 +77,7 @@ app.post('/api/coordinates', async function(req, res) {
 		const distanceFromCenter = getDistance( { lat, long },  center);
 		const radius = parseInt(storage.radius);
 
-		const outOfBounds = distance > radius;
+		const outOfBounds = distanceFromCenter > radius;
 		const prevOutOfBounds = storage.outOfBounds;
 
 		// update storage
